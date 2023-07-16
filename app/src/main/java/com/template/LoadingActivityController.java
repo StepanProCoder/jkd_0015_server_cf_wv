@@ -27,7 +27,7 @@ public class LoadingActivityController {
         // Инициализация Firebase SDK
         FirebaseApp.initializeApp(activity);
 
-        String savedResult = SaveLoadResult.loadResult(activity);
+        String savedResult = SaveLoadResult.loadResult("Results", "result", activity);
 
         if (!savedResult.isEmpty()) {
             if (savedResult.equals("error")) {

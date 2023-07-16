@@ -1,7 +1,5 @@
 package com.template;
 
-import android.util.Log;
-
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -25,11 +23,10 @@ public class ResponseHandler implements Callback {
     @Override
     public void onResponse(Call call, Response response) throws IOException {
         String responseString = response.body().string();
-        SaveLoadResult.saveResult(responseString, networkController.controller.activity);
+        SaveLoadResult.saveResult("Results", "result", responseString, networkController.controller.activity);
 
         if (responseString.equals("error")) {
             // Ошибка, открывайте MainActivity
-            Log.d("HERE", "HERE");
             networkController.controller.activity.runOnUiThread(() -> networkController.controller.openMainActivity());
         } else {
             // Получен сайт, открывайте WebActivity
