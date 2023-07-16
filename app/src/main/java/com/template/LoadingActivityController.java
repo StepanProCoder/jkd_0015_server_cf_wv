@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -63,7 +64,7 @@ public class LoadingActivityController {
                         if (ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                             process();
                         } else {
-                            beginProcessing();
+                            Toast.makeText(activity, "Дайте разрешение на уведомления для дальнейшей работы", Toast.LENGTH_LONG).show();
                         }
                     });
             Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
