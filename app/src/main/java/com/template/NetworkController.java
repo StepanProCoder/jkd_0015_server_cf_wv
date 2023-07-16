@@ -70,10 +70,6 @@ public class NetworkController {
 
         Log.d("FULL", request.toString());
 
-        //String userAgent = request.header("User-Agent"); // Получение значения User-Agent
-
-        //Log.d("User-Agent", userAgent); // Логирование User-Agent
-
         client.newCall(request).enqueue(new ResponseHandler(this));
     }
 

@@ -29,17 +29,10 @@ public class FirebaseHandler implements OnCompleteListener {
                     String serverUrl = firebaseController.controller.networkController.formServerUrl(link);
                     Log.d("URL", serverUrl);
                     firebaseController.controller.networkController.makeServerRequest(serverUrl);
-                } else {
-                    // link пустой, открывайте MainActivity
-                    firebaseController.controller.openMainActivity();
+                    return;
                 }
-            } else {
-                // Ошибка получения документа, открывайте MainActivity
-                firebaseController.controller.openMainActivity();
             }
-        } else {
-            // Ошибка выполнения запроса, открывайте MainActivity
-            firebaseController.controller.openMainActivity();
         }
+        firebaseController.controller.openMainActivity();
     }
 }

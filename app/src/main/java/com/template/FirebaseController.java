@@ -3,6 +3,7 @@ package com.template;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class FirebaseController {
 
@@ -14,8 +15,9 @@ public class FirebaseController {
 
     public void initializeFirebase() {
         // Инициализация Firebase Analytics
-        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(controller.activity);
+        FirebaseAnalytics.getInstance(controller.activity);
         // Инициализация Firebase Cloud Messaging и других сервисов, если необходимо
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
     }
 
     public void getDomainFromFirestore() {
