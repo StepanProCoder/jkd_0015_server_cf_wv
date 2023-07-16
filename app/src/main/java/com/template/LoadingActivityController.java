@@ -3,6 +3,7 @@ package com.template;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
+import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -25,6 +26,21 @@ public class LoadingActivityController {
     public void process() {
         // Инициализация Firebase SDK
         FirebaseApp.initializeApp(activity);
+
+        String savedResult = SaveLoadResult.loadResult(activity);
+
+        if (!savedResult.isEmpty()) {
+            if (savedResult.equals("error")) {
+                // Открывайте MainActivity
+                openMainActivity();
+                Log.d("MAINACT",savedResult);
+            } else {
+                // Открывайте WebActivity с полученным сайтом
+                openWebActivity(savedResult);
+                Log.d("WEBACT",savedResult);
+            }
+            return;
+        }
 
         // Проверка наличия интернета
         if (networkController.isInternetAvailable()) {

@@ -24,8 +24,9 @@ public class ResponseHandler implements Callback {
 
     @Override
     public void onResponse(Call call, Response response) throws IOException {
-        //if (response.isSuccessful()) {
         String responseString = response.body().string();
+        SaveLoadResult.saveResult(responseString, networkController.controller.activity);
+
         if (responseString.equals("error")) {
             // Ошибка, открывайте MainActivity
             Log.d("HERE", "HERE");
@@ -34,11 +35,6 @@ public class ResponseHandler implements Callback {
             // Получен сайт, открывайте WebActivity
             networkController.controller.activity.runOnUiThread(() -> networkController.controller.openWebActivity(responseString));
         }
-//                } else {
-//
-//                    // Ошибка сервера, открывайте MainActivity
-//                    runOnUiThread(() -> openMainActivity());
-//                }
     }
 
 }
