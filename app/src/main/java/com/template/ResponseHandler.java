@@ -17,6 +17,7 @@ public class ResponseHandler implements Callback {
     @Override
     public void onFailure(Call call, IOException e) {
         // Обработка ошибки
+        SaveLoadResult.saveResult("Results", "result", "error", networkController.controller.activity);
         networkController.controller.activity.runOnUiThread(() -> networkController.controller.openMainActivity());
     }
 

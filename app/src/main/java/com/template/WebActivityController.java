@@ -11,11 +11,11 @@ import android.webkit.WebViewClient;
 
 public class WebActivityController {
     private WebActivity activity;
-    private String url;
+    private String mainUrl;
     public WebActivityController(WebActivity activity) {
         this.activity = activity;
         String url = activity.getIntent().getStringExtra("url");
-        this.url = url;
+        this.mainUrl = url;
         Log.d("WEB", url);
     }
 
@@ -25,7 +25,7 @@ public class WebActivityController {
         if (savedInstanceState != null) {
             activity.webView.restoreState(savedInstanceState);
         } else {
-            loadUrl(url);
+            loadUrl(mainUrl);
         }
 
     }
@@ -52,20 +52,25 @@ public class WebActivityController {
         activity.webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+
                 // Загрузка сохраненных куков из SharedPreferences
-                String cookies = SaveLoadResult.loadResult("cookies", url, activity);
+                String cookies = SaveLoadResult.loadResult("Cookies", url, activity);
 
                 // Установка куков в CookieManager
                 CookieManager.getInstance().setCookie(url, cookies);
-                CookieManager.getInstance().flush();
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                // Сброс куков в WebView
-                CookieManager.getInstance().flush();
+
+                // Получение текущих куков из CookieManager
+                String cookies = CookieManager.getInstance().getCookie(url);
+
+                // Сохранение куков в SharedPreferences
+                SaveLoadResult.saveResult("Cookies", url, cookies, activity);
             }
         });
+
     }
 
 

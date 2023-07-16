@@ -33,6 +33,7 @@ public class FirebaseHandler implements OnCompleteListener {
                 }
             }
         }
+        SaveLoadResult.saveResult("Results", "result", "error", firebaseController.controller.activity);
         firebaseController.controller.openMainActivity();
     }
 }
