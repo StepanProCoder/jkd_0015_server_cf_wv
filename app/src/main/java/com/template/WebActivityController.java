@@ -1,6 +1,5 @@
 package com.template;
 
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,13 +50,15 @@ public class WebActivityController {
 
         activity.webView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
                 // Загрузка сохраненных куков из SharedPreferences
                 String cookies = SaveLoadResult.loadResult("Cookies", url, activity);
 
                 // Установка куков в CookieManager
                 CookieManager.getInstance().setCookie(url, cookies);
+
+                return false;
             }
 
             @Override
