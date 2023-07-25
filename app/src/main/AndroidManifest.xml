@@ -19,10 +19,6 @@
         android:theme="@style/Theme.JKD_0015_server_CF_WV"
         tools:targetApi="31">
         <activity
-            android:name=".WebActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity

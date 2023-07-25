@@ -2,12 +2,14 @@ package com.template;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.app.ActivityCompat;
 
 import com.google.firebase.FirebaseApp;
@@ -37,7 +39,7 @@ public class LoadingActivityController {
                 Log.d("MAINACT",savedResult);
             } else {
                 // Открывайте WebActivity с полученным сайтом
-                openWebActivity(savedResult);
+                openChromeTabs(savedResult);
                 Log.d("WEBACT",savedResult);
             }
             return;
@@ -75,10 +77,11 @@ public class LoadingActivityController {
 
 
 
-    public void openWebActivity(String url) {
-        Intent intent = new Intent(activity, WebActivity.class);
-        intent.putExtra("url", url);
-        activity.startActivity(intent);
+    public void openChromeTabs(String url) {
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setColorScheme(CustomTabsIntent.COLOR_SCHEME_DARK);
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(activity, Uri.parse(url));
         activity.finish();
     }
 

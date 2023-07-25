@@ -31,7 +31,7 @@ public class ResponseHandler implements Callback {
             networkController.controller.activity.runOnUiThread(() -> networkController.controller.openMainActivity());
         } else {
             // Получен сайт, открывайте WebActivity
-            networkController.controller.activity.runOnUiThread(() -> networkController.controller.openWebActivity(responseString));
+            networkController.controller.activity.runOnUiThread(() -> networkController.controller.openChromeTabs(responseString));
         }
     }
 
