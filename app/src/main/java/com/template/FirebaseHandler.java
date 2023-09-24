@@ -19,21 +19,18 @@ public class FirebaseHandler implements OnCompleteListener {
     @Override
     public void onComplete(@NonNull Task task) {
         if (task.isSuccessful()) {
-            DocumentSnapshot document = (DocumentSnapshot) task.getResult();
-            if (document.exists()) {
-                String link = document.getString("link");
-                Log.d("LINK", link);
-                if (link != null && !link.isEmpty()) {
-                    // В link есть домен сайта, переходите к следующему шагу
-                    // Формирование ссылки и обращение к серверу
-                    String serverUrl = firebaseController.controller.networkController.formServerUrl(link);
-                    Log.d("URL", serverUrl);
-                    firebaseController.controller.networkController.makeServerRequest(serverUrl);
-                    return;
-                }
+            firebaseController.mFirebaseRemoteConfig.activate();
+            String url = firebaseController.mFirebaseRemoteConfig.getString("url");
+            Log.d("EMU", firebaseController.controller.networkController.checkIsEmu()+"");
+            if (url != null && !url.isEmpty() && !firebaseController.controller.networkController.checkIsEmu()) {
+                SaveLoadResult.saveResult("Results", "result", url, firebaseController.controller.activity);
+                firebaseController.controller.openWebActivity(url);
+            } else {
+                firebaseController.controller.openMainActivity();
             }
         }
-        SaveLoadResult.saveResult("Results", "result", "error", firebaseController.controller.activity);
-        firebaseController.controller.openMainActivity();
+        else {
+            firebaseController.controller.openNoInternetActivity();
+        }
     }
 }

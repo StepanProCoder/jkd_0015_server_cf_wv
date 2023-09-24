@@ -3,10 +3,14 @@ package com.template;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.google.android.datatransport.backend.cct.BuildConfig;
+
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -31,46 +35,24 @@ public class NetworkController {
         }
     }
 
-    public String formServerUrl(String link) {
-        String domenFromFirebase = link; // Полученный домен из Firebase Cloud Firestore
-        String packageName = controller.activity.getPackageName(); // Пакет приложения
-        String userId = UUID.randomUUID().toString(); // Генерация UUID для пользователя
-        String timeZone = TimeZone.getDefault().getID(); // Таймзона устройства
-
-        String url = domenFromFirebase + "/?packageid=" + packageName +
-                "&usserid=" + userId +
-                "&getz=" + timeZone +
-                "&getr=utm_source=google-play&utm_medium=organic";
-
-        return url;
-    }
-
-    public String getUserAgent(Context context) {
-        WebView webView = new WebView(context);
-        WebSettings settings = webView.getSettings();
-        return settings.getUserAgentString();
-    }
-
-    public void makeServerRequest(String serverUrl) {
-        // Выполнение запроса к серверу и обработка ответа
-        OkHttpClient client = new OkHttpClient.Builder()
-                .build();
-
-        Request request = new Request.Builder()
-                .header("User-Agent", getUserAgent(controller.activity))
-                .url(serverUrl)
-                .build();
-
-        String userAgent = request.header("User-Agent");
-        if (userAgent != null) {
-            Log.d("User-Agent", userAgent);
-        } else {
-            Log.d("User-Agent", "User-Agent не указан");
-        }
-
-        Log.d("FULL", request.toString());
-
-        client.newCall(request).enqueue(new ResponseHandler(this));
+    public boolean checkIsEmu() {
+        if (BuildConfig.DEBUG) return false;
+        String phoneModel = Build.MODEL;
+        String buildProduct = Build.PRODUCT; String buildHardware = Build.HARDWARE; String brand = Build.BRAND;
+        return (Build.FINGERPRINT.startsWith("generic")
+                || phoneModel.contains("google_sdk")
+                || phoneModel.toLowerCase(Locale.getDefault()).contains("droid4x") || phoneModel.contains("Emulator")
+                || phoneModel.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion")
+                || buildHardware.equals("goldfish") || brand.contains("google")
+                || buildHardware.equals("vbox86") || buildProduct.equals("sdk")
+                || buildProduct.equals("google_sdk")
+                || buildProduct.equals("sdk_x86")
+                || buildProduct.equals("vbox86p")
+                || Build.BOARD.toLowerCase(Locale.getDefault()).contains("nox")
+                || Build.BOOTLOADER.toLowerCase(Locale.getDefault()).contains("nox") || buildHardware.toLowerCase(Locale.getDefault()).contains("nox")
+                || buildProduct.toLowerCase(Locale.getDefault()).contains("nox"))
+                || (brand.startsWith("generic") && Build.DEVICE.startsWith("generic"));
     }
 
 }

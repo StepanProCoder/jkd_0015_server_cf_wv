@@ -18,7 +18,7 @@ public class LoadingActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         controller = new LoadingActivityController(this);
 
-        controller.beginProcessing();
+        controller.process();
     }
 
 

@@ -31,49 +31,23 @@ public class LoadingActivityController {
         String savedResult = SaveLoadResult.loadResult("Results", "result", activity);
 
         if (!savedResult.isEmpty()) {
-            if (savedResult.equals("error")) {
-                // Открывайте MainActivity
-                openMainActivity();
-                Log.d("MAINACT",savedResult);
-            } else {
+            // Проверка наличия интернета
+            Log.d("INTERNET", networkController.isInternetAvailable()+"");
+            if (networkController.isInternetAvailable()) {
                 // Открывайте WebActivity с полученным сайтом
                 openWebActivity(savedResult);
                 Log.d("WEBACT",savedResult);
+            } else {
+                openNoInternetActivity();
             }
             return;
         }
 
-        // Проверка наличия интернета
-        if (networkController.isInternetAvailable()) {
-            // Обращение к Firebase и серверу
-            firebaseController.initializeFirebase();
-            firebaseController.getDomainFromFirestore();
-        } else {
-            openMainActivity();
-        }
+        // Обращение к Firebase
+        firebaseController.initializeFirebase();
+        firebaseController.getDomainFromFirestore();
+
     }
-
-    public void beginProcessing() {
-        if (ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            process();
-        }
-        else {
-            ActivityResultLauncher<Intent> notificationPermissionLauncher = activity.registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        if (ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                            process();
-                        } else {
-                            Toast.makeText(activity, "Дайте разрешение на уведомления для дальнейшей работы", Toast.LENGTH_LONG).show();
-                        }
-                    });
-            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                    .putExtra(Settings.EXTRA_APP_PACKAGE, activity.getPackageName());
-            notificationPermissionLauncher.launch(intent);
-        }
-    }
-
-
 
     public void openWebActivity(String url) {
         Intent intent = new Intent(activity, WebActivity.class);
@@ -84,6 +58,12 @@ public class LoadingActivityController {
 
     public void openMainActivity() {
         Intent intent = new Intent(activity, MainActivity.class);
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
+    public void openNoInternetActivity() {
+        Intent intent = new Intent(activity, NoInternetActivity.class);
         activity.startActivity(intent);
         activity.finish();
     }

@@ -1,37 +1,26 @@
 {
   "project_info": {
-    "project_number": "852934936389",
-    "firebase_url": "https://testcloforden-default-rtdb.firebaseio.com",
-    "project_id": "testcloforden",
-    "storage_bucket": "testcloforden.appspot.com"
+    "project_number": "888304512771",
+    "project_id": "remote-config-test-st",
+    "storage_bucket": "remote-config-test-st.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:852934936389:android:58362040f034b1834ae02c",
+        "mobilesdk_app_id": "1:888304512771:android:8e8e496d8165fc50684336",
         "android_client_info": {
           "package_name": "com.template"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "852934936389-n9ah5775308endpufhj3q49bqask0df7.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDFHVL5HBOYFAkgYui_XYJm_H6D4bkE2WM"
+          "current_key": "AIzaSyBNnVe5naPeV3Y9YFUdqaKMxLE4EwuPp0o"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "852934936389-n9ah5775308endpufhj3q49bqask0df7.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
